@@ -232,7 +232,7 @@ window.addEventListener('load',preloader.endLoading())</script><div class="js-pj
 })()</script></div><script defer src="/live2d-widget/autoload.js"></script><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/fireworks.min.js"></script><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script>var gitcalendar = new Vue({
   el: '#gitcalendar',
   data: {
-    simplemode: true, 
+    simplemode: false, 
     user: 'DogWealth',
     fixed: 'fixed',
     px: 'px',
@@ -294,7 +294,7 @@ window.addEventListener('load',preloader.endLoading())</script><div class="js-pj
     },
   }
 });
-var apiurl = 'python-github-calendar-api-red.vercel.app# 留空为默认公共API，自建api内容详见下节' ? 'https://python-github-calendar-api-red.vercel.app# 留空为默认公共API，自建api内容详见下节/api?' : 'https://githubapi.ryanchristian.dev/user/'
+var apiurl = 'hexo-gitcalendar-api.vercel.app# 留空为默认公共API，自建api内容详见下节' ? 'https://hexo-gitcalendar-api.vercel.app# 留空为默认公共API，自建api内容详见下节/api?' : 'https://githubapi.ryanchristian.dev/user/'
 var githubapiurl = apiurl + gitcalendar.user;
 //canvas绘图
 function responsiveChart() {
