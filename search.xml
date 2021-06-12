@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>交换与路由总复习第八章</title>
+      <link href="/2021/06/12/%E4%BA%A4%E6%8D%A2%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%80%BB%E5%A4%8D%E4%B9%A0%E7%AC%AC%E5%85%AB%E7%AB%A0/"/>
+      <url>/2021/06/12/%E4%BA%A4%E6%8D%A2%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%80%BB%E5%A4%8D%E4%B9%A0%E7%AC%AC%E5%85%AB%E7%AB%A0/</url>
+      
+        <content type="html"><![CDATA[<h1>IP 交换与 MPLS 交换技术</h1><h2 id="IP和ATM的特点对比">IP和ATM的特点对比</h2><img src="https://api2.mubu.com/v3/document_image/1263a8a1-bd34-4194-8825-7008fc221304-1279996.jpg" alt="img" style="zoom:50%;" /><h2 id="IP与ATM的融合模型">IP与ATM的融合模型</h2><h3 id="重叠模型">重叠模型</h3><p>重叠模型是把 ATM 网络看成另一种承载 IP 数据分组的异型子网， 将 IP 层直接叠加在 ATM 层之上， 这样 IP 数据分组封装在 ATM 信元中， 使得 IP 数据分组的转发速度提高到了 ATM 信元交换的级别上。</p><h3 id="集成模型">集成模型</h3><p>集成模型是把 ATM 层和 IP 层看成是同样的对等层， 这样可以消除复杂的网络间映射， 只保留一套 IP 地址和一种 IP 选路协议， 结合了 IP 路由的灵活性和 ATM 交换的快速性， 并保障了QoS； 它继承了 IP 协议的应用广泛和 ATM 交换的大容量和高速度， 从无连接方式转变为面向连接方式， 使用短的标记替代长的 IP 地址进行 IP 数据分组的转发， 达到了快速高效的目标。</p><img src="https://api2.mubu.com/v3/document_image/188e3849-1573-4270-8a44-e395aa5e1fc2-1279996.jpg" alt="img" style="zoom:50%;" />]]></content>
+      
+      
+      <categories>
+          
+          <category> 专业课 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 交换与路由 </tag>
+            
+            <tag> 复习 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>交换与路由总复习第七章</title>
       <link href="/2021/06/09/%E4%BA%A4%E6%8D%A2%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%80%BB%E5%A4%8D%E4%B9%A0%E7%AC%AC%E4%B8%83%E7%AB%A0/"/>
       <url>/2021/06/09/%E4%BA%A4%E6%8D%A2%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%80%BB%E5%A4%8D%E4%B9%A0%E7%AC%AC%E4%B8%83%E7%AB%A0/</url>
