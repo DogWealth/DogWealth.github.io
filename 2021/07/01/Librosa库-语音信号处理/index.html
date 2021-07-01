@@ -1,0 +1,843 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Librosa库-语音信号处理 | DogWealth</title><meta name="keywords" content="语音分离项目,Python,语音信号处理"><meta name="author" content="Liu Yang"><meta name="copyright" content="Liu Yang"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="语音信号处理库——Librosa librosa语音信号处理 - 简书 (jianshu.com)这篇文章说的非常详细，但有一些函数已经荒废了我做了一些补充。 librosa — librosa 0.8.1 documentation官方文档 特征提取流程图：  1.读取语音 1y,sr &#x3D; librosa.load(path, sr&#x3D;22050, mono&#x3D;True, offset&#x3D;0.0, d">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Librosa库-语音信号处理">
+<meta property="og:url" content="https://dogwealth.github.io/2021/07/01/Librosa%E5%BA%93-%E8%AF%AD%E9%9F%B3%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/index.html">
+<meta property="og:site_name" content="DogWealth">
+<meta property="og:description" content="语音信号处理库——Librosa librosa语音信号处理 - 简书 (jianshu.com)这篇文章说的非常详细，但有一些函数已经荒废了我做了一些补充。 librosa — librosa 0.8.1 documentation官方文档 特征提取流程图：  1.读取语音 1y,sr &#x3D; librosa.load(path, sr&#x3D;22050, mono&#x3D;True, offset&#x3D;0.0, d">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://upimage.alexhchu.com/2020/10/21/671e773d973ae.jpg">
+<meta property="article:published_time" content="2021-07-01T09:28:12.000Z">
+<meta property="article:modified_time" content="2021-07-01T15:23:54.325Z">
+<meta property="article:author" content="Liu Yang">
+<meta property="article:tag" content="语音分离项目">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="语音信号处理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://upimage.alexhchu.com/2020/10/21/671e773d973ae.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://dogwealth.github.io/2021/07/01/Librosa%E5%BA%93-%E8%AF%AD%E9%9F%B3%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":300,"languages":{"author":"作者: Liu Yang","link":"链接: ","source":"来源: DogWealth","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-left"},
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Librosa库-语音信号处理',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-07-01 23:23:54'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://pic4.zhimg.com/v2-728dee670e821ac6f498a38e94935a63_r.jpg?source=1940ef5c" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">18</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://upimage.alexhchu.com/2020/10/21/671e773d973ae.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">DogWealth</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Librosa库-语音信号处理</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-07-01T09:28:12.000Z" title="发表于 2021-07-01 17:28:12">2021-07-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-07-01T15:23:54.325Z" title="更新于 2021-07-01 23:23:54">2021-07-01</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%A7%91%E7%A0%94%E9%A1%B9%E7%9B%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">科研项目学习笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>13分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Librosa库-语音信号处理"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>语音信号处理库——Librosa</h1>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/8d6ffe6e10b9">librosa语音信号处理 - 简书 (jianshu.com)</a>这篇文章说的非常详细，但有一些函数已经荒废了我做了一些补充。</p>
+<p><a target="_blank" rel="noopener" href="https://librosa.org/doc/latest/index.html">librosa — librosa 0.8.1 documentation</a>官方文档</p>
+<p><strong>特征提取流程图</strong>：</p>
+<img src="https://api2.mubu.com/v3/document_image/d8b2a6a9-3745-4a7a-9bc2-9a71ed0d227a-1279996.jpg" alt="img" style="zoom:80%;" />
+<h2 id="1-读取语音">1.读取语音</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">y,sr = librosa.load(path, sr=<span class="number">22050</span>, mono=<span class="literal">True</span>, offset=<span class="number">0.0</span>, duration=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>参数</strong>：</p>
+<ul>
+<li><strong>path</strong>：文件路径；</li>
+<li><strong>sr</strong>：采样频率，默认22050，可以用参数’None’表示用原语音自身的采样频率；</li>
+<li><strong>mono</strong>：是否将音频转换为单声道</li>
+<li><strong>offset</strong>：表示音频读取的位置，以s为单位</li>
+<li><strong>duration</strong>：表示读取音频的长度，以s为单位</li>
+</ul>
+<p><strong>返回值</strong>：</p>
+<ul>
+<li>y：音频时间序列</li>
+<li>sr：音频的采样频率</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> librosa</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">y,sr= librosa.load(path=<span class="string">&quot;test.wav&quot;</span>,sr=<span class="literal">None</span>,mono=<span class="literal">False</span>,offset=<span class="number">1</span>,duration=<span class="number">3</span>)</span><br><span class="line">plt.plot(y)</span><br></pre></td></tr></table></figure>
+<p><img src="https://api2.mubu.com/v3/document_image/74daa031-d638-475f-97a4-eeed1ca1387e-1279996.jpg" alt="img"></p>
+<h2 id="2-读取时长">2.读取时长</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d = librosa.get_duration(y=<span class="literal">None</span>, sr=<span class="number">22050</span>, S=<span class="literal">None</span>, n_fft=<span class="number">2048</span>, hop_length=<span class="number">512</span>, center=<span class="literal">True</span>, filename=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>参数</strong>：</p>
+<ul>
+<li><strong>y</strong> ：音频时间序列</li>
+<li><strong>sr</strong> ：y的音频采样率</li>
+<li><strong>S</strong> ：STFT矩阵或任何STFT衍生的矩阵（例如，色谱图或梅尔频谱图）。根据频谱图输入计算的持续时间仅在达到帧分辨率之前才是准确的。如果需要高精度，则最好直接使用音频时间序列。</li>
+<li><strong>n_fft</strong> ：S的 FFT窗口大小</li>
+<li><strong>hop_length</strong> ：S列之间的音频样本数</li>
+<li><strong>center</strong> ：布尔值
+<ul>
+<li>如果为True，则S [:, t]的中心为y [t * hop_length]</li>
+<li>如果为False，则S [:, t]从y[t * hop_length]开始</li>
+</ul>
+</li>
+<li><strong>filename</strong> ：如果提供，则所有其他参数都将被忽略，并且持续时间是直接从音频文件中计算得出的。</li>
+</ul>
+<p><strong>返回值</strong>：</p>
+<ul>
+<li><strong>d</strong>：音频时长</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">librosa.get_duration(y,sr)<span class="comment">#承接上面的代码</span></span><br><span class="line"><span class="comment">#out：3.0</span></span><br><span class="line">librosa.get_duration(filename=<span class="string">&quot;test.wav&quot;</span>)</span><br><span class="line"><span class="comment">#out：6.56</span></span><br></pre></td></tr></table></figure>
+<h2 id="3-采样率">3.采样率</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sr = librosa.get_samplerate(path)</span><br></pre></td></tr></table></figure>
+<p><strong>参数：</strong></p>
+<ul>
+<li><strong>path</strong>：音频文件的路径</li>
+</ul>
+<p><strong>返回</strong>：</p>
+<ul>
+<li><strong>sr</strong>：音频文件的采样率</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">librosa.get_samplerate(<span class="string">&quot;test.wav&quot;</span>)</span><br><span class="line"><span class="comment">#out：8000</span></span><br></pre></td></tr></table></figure>
+<h2 id="4-写音频">4.写音频</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#librosa.output.write_wav(path, y, sr, norm=False)在0.7.0版本荒废了现在要用soundfile.write()</span></span><br><span class="line">soundfile.write(file, data, samplerate, subtype=<span class="literal">None</span>, endian=<span class="literal">None</span>, <span class="built_in">format</span>=<span class="literal">None</span>, closefd=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>参数</strong>：</p>
+<ul>
+<li><strong>file</strong>：要保存的文件名</li>
+<li><strong>data</strong>：音频时间序列</li>
+<li><strong>samplerate</strong>：音频的采样率</li>
+<li><strong>其他参数</strong>：参考<a target="_blank" rel="noopener" href="https://pysoundfile.readthedocs.io/en/latest/index.html#soundfile.SoundFile">SoundFile — PySoundFile 0.10.3post1-1-g0394588 documentation</a></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> soundfile <span class="keyword">as</span> sf</span><br><span class="line">sf.write(<span class="string">&quot;test2.wav&quot;</span>,y,sr)</span><br><span class="line">y2,sr2 = librosa.load(<span class="string">&quot;test2.wav&quot;</span>,sr=<span class="literal">None</span>)</span><br><span class="line">plt.plot(y2)</span><br></pre></td></tr></table></figure>
+<p><img src="https://api2.mubu.com/v3/document_image/74daa031-d638-475f-97a4-eeed1ca1387e-1279996.jpg" alt="img"></p>
+<h2 id="5-过零率">5.过零率</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zcr = librosa.feature.zero_crossing_rate(y, frame_length = <span class="number">2048</span>, hop_length = <span class="number">512</span>, center = <span class="literal">True</span>) </span><br></pre></td></tr></table></figure>
+<p><strong>参数：</strong></p>
+<ul>
+<li><strong>y</strong> ：音频时间序列</li>
+<li><strong>frame_length</strong> ：帧长</li>
+<li><strong>hop_length</strong> ：帧移</li>
+<li><strong>center</strong>：bool，如果为True，则通过填充y的边缘来使帧居中。</li>
+</ul>
+<p><strong>返回：</strong></p>
+<ul>
+<li><strong>zcr</strong>：zcr[0，i]是第i帧中的过零率</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">librosa.feature.zero_crossing_rate(y)</span><br><span class="line"><span class="comment">#out：array([[0.14208984, 0.1796875 , 0.23486328, 0.20800781, 0.21875   ,</span></span><br><span class="line"><span class="comment">#        0.25830078, 0.22314453, 0.21337891, 0.20263672, 0.18115234,</span></span><br><span class="line"><span class="comment">#        0.17480469, 0.16210938, 0.16015625, 0.15722656, 0.22460938,</span></span><br><span class="line"><span class="comment">#        0.23974609, 0.26367188, 0.30615234, 0.30615234, 0.33691406,</span></span><br><span class="line"><span class="comment">#        0.34375   , 0.3125    , 0.29345703, 0.28417969, 0.27539062,</span></span><br><span class="line"><span class="comment">#        0.29345703, 0.26611328, 0.24511719, 0.21386719, 0.17480469,</span></span><br><span class="line"><span class="comment">#        0.17529297, 0.15039062, 0.17236328, 0.16650391, 0.18310547,</span></span><br><span class="line"><span class="comment">#        0.17675781, 0.14208984, 0.22802734, 0.30566406, 0.40576172,</span></span><br><span class="line"><span class="comment">#        0.52880859, 0.55126953, 0.57080078, 0.59765625, 0.58398438,</span></span><br><span class="line"><span class="comment">#        0.54394531, 0.39501953]])</span></span><br></pre></td></tr></table></figure>
+<h2 id="6-波形图">6.波形图</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">librosa.display.waveplot(y, sr=<span class="number">22050</span>, x_axis=<span class="string">&#x27;time&#x27;</span>, offset=<span class="number">0.0</span>, ax=<span class="literal">None</span>)</span><br><span class="line"><span class="comment">#需要注意，必须import librosa.display，否则会报错“no attribute ‘display’”</span></span><br></pre></td></tr></table></figure>
+<p><strong>参数：</strong></p>
+<ul>
+<li><strong>y</strong> ：音频时间序列</li>
+<li><strong>sr</strong> ：y的采样率</li>
+<li><strong>x_axis</strong> ：str {‘time’，‘off’，‘none’}或None，如果为“时间”，则在x轴上给定时间刻度线。</li>
+<li><strong>offset</strong>：水平偏移（以秒为单位）开始波形图</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#librosa.display.waveplot在0.9.0会废除，所以这里推荐使用librosa.display.waveshow</span></span><br><span class="line">librosa.display.waveplot(y, sr=<span class="number">22050</span>, max_points=<span class="number">50000.0</span>, x_axis=<span class="string">&#x27;time&#x27;</span>, offset=<span class="number">0.0</span>, max_sr=<span class="number">1000</span>, ax=<span class="literal">None</span>, **kwargs)</span><br></pre></td></tr></table></figure>
+<p><strong>参数</strong>：</p>
+<ul>
+<li><strong>max_points</strong>：绘制的最大时间点数，如果超过持续时间，则执行下采样</li>
+<li><strong>max_sr</strong>：可视化的最大采样率‎</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> librosa.display</span><br><span class="line">librosa.display.waveplot(y,sr=<span class="number">8000</span>,x_axis=<span class="string">&quot;time&quot;</span>,offset=<span class="number">0</span>,ax=<span class="literal">None</span>)</span><br><span class="line">plt.figure()</span><br><span class="line">librosa.display.waveshow(y,sr=<span class="number">8000</span>,x_axis=<span class="string">&quot;ms&quot;</span>)</span><br></pre></td></tr></table></figure>
+<img src="https://api2.mubu.com/v3/document_image/b7ebfb9f-133c-4bbd-a00f-b8154419aeab-1279996.jpg" alt="img" style="zoom: 80%;" />
+<h2 id="7-短时傅里叶变换">7.短时傅里叶变换</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">D = librosa.stft(y,n_fft=<span class="number">2048</span>,hop_length=<span class="literal">None</span>,win_length=<span class="literal">None</span>,window=<span class="string">&#x27;hann&#x27;</span>,center=<span class="literal">True</span>,pad_mode=<span class="string">&#x27;reflect&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>短时傅立叶变换（STFT），返回一个复数矩阵使得D(f,t)</p>
+<ul>
+<li>复数的实部：np.abs(D(f,t))频率的<strong>振幅</strong></li>
+<li>复数的虚部：np.angle(D(f,t))频率的<strong>相位</strong></li>
+</ul>
+<p><strong>参数：</strong></p>
+<ul>
+<li>
+<p><strong>y</strong>：音频时间序列</p>
+</li>
+<li>
+<p><strong>n_fft</strong>：FFT窗口大小，n_fft=hop_length+overlapping</p>
+</li>
+<li>
+<p><strong>hop_length</strong>：帧移，如果未指定，则默认win_length / 4。</p>
+</li>
+<li>
+<p><strong>win_length</strong>：每一帧音频都由window（）加窗。窗长win_length，然后用零填充以匹配N_FFT。默认win_length=n_fft。</p>
+</li>
+<li>
+<p>window</p>
+<p>：字符串，元组，数字，函数 shape =（n_fft, )</p>
+<ul>
+<li>窗口（字符串，元组或数字）；</li>
+<li>窗函数，例如scipy.signal.hanning</li>
+<li>长度为n_fft的向量或数组</li>
+</ul>
+</li>
+<li>
+<p>center</p>
+<p>：bool</p>
+<ul>
+<li>如果为True，则填充信号y，以使帧 D [:, t]以y [t * hop_length]为中心。</li>
+<li>如果为False，则D [:, t]从y [t * hop_length]开始</li>
+</ul>
+</li>
+<li>
+<p><strong>dtype</strong>：D的复数值类型。默认值为64-bit complex复数</p>
+</li>
+<li>
+<p><strong>pad_mode</strong>：如果center = True，则在信号的边缘使用填充模式。默认情况下，STFT使用reflection padding。</p>
+</li>
+</ul>
+<p><strong>返回：</strong></p>
+<ul>
+<li>STFT矩阵，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mi>h</mi><mi>a</mi><mi>p</mi><mi>e</mi><mo>=</mo><mo stretchy="false">(</mo><mn>1</mn><mo>+</mo><mfrac><mrow><mi>n</mi><mi>f</mi><mi>f</mi><mi>t</mi></mrow><mn>2</mn></mfrac><mo separator="true">,</mo><mi>t</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">shape=(1+\frac{nfft}{2},t)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">s</span><span class="mord mathnormal">ha</span><span class="mord mathnormal">p</span><span class="mord mathnormal">e</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.277216em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9322159999999999em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.446108em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mord mathnormal mtight" style="margin-right:0.10764em;">ff</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal">t</span><span class="mclose">)</span></span></span></span></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">librosa.stft(y,center=<span class="literal">True</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;out：array([[-0.00171932+0.0000000e+00j,  0.00592006+0.0000000e+00j,</span></span><br><span class="line"><span class="string">         0.01431638+0.0000000e+00j, ..., -0.00448615+0.0000000e+00j,</span></span><br><span class="line"><span class="string">        -0.00437583+0.0000000e+00j, -0.00784964+0.0000000e+00j],</span></span><br><span class="line"><span class="string">       [ 0.00244478+5.6835911e-18j, -0.00073931+7.5202361e-03j,</span></span><br><span class="line"><span class="string">        -0.0131455 +9.1534172e-04j, ...,  0.00395171+4.8493536e-04j,</span></span><br><span class="line"><span class="string">         0.00013135-3.2658517e-04j,  0.00466984-3.1057880e-03j],</span></span><br><span class="line"><span class="string">       [-0.00165288+1.0003131e-18j, -0.00410656-1.7896685e-03j,</span></span><br><span class="line"><span class="string">         0.00912124-1.1786177e-03j, ..., -0.00278488-1.6674915e-03j,</span></span><br><span class="line"><span class="string">         0.00238109-5.2638666e-04j, -0.0019866 +1.9712506e-03j],</span></span><br><span class="line"><span class="string">       ...,</span></span><br><span class="line"><span class="string">       [-0.00029123+9.0889913e-19j, -0.0007377 -1.0746513e-03j,</span></span><br><span class="line"><span class="string">         0.00117161+1.0120005e-03j, ..., -0.00201914+9.7867288e-04j,</span></span><br><span class="line"><span class="string">        -0.00083203-9.6789573e-04j,  0.00158986+7.2865405e-05j],</span></span><br><span class="line"><span class="string">       [-0.00081057+3.4067665e-18j, -0.00016138-3.1721860e-04j,</span></span><br><span class="line"><span class="string">        -0.00199592-1.2107765e-03j, ...,  0.00122393+5.3408562e-04j,</span></span><br><span class="line"><span class="string">         0.00035368-9.7684760e-04j, -0.0012544 -7.4694009e-04j],</span></span><br><span class="line"><span class="string">       [ 0.00112953+0.0000000e+00j,  0.00147533+0.0000000e+00j,</span></span><br><span class="line"><span class="string">         0.0029277 +0.0000000e+00j, ..., -0.00073284+0.0000000e+00j,</span></span><br><span class="line"><span class="string">        -0.0003154 +0.0000000e+00j,  0.00141847+0.0000000e+00j]],</span></span><br><span class="line"><span class="string">      dtype=complex64)&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="8-短时傅里叶逆变换">8.短时傅里叶逆变换</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">y = librosa.istft(stft_matrix, hop_length=<span class="literal">None</span>, win_length=<span class="literal">None</span>, window=<span class="string">&#x27;hann&#x27;</span>, center=<span class="literal">True</span>, length=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+<p>短时傅立叶逆变换（ISTFT），将复数值D(f,t)频谱矩阵转换为时间序列y，窗函数、帧移等参数应与stft相同</p>
+<p><strong>参数：</strong></p>
+<ul>
+<li>
+<p><strong>stft_matrix</strong> ：经过STFT之后的矩阵</p>
+</li>
+<li>
+<p><strong>hop_length</strong> ：帧移，默认为<img src="https://math.jianshu.com/math?formula=%5Cfrac%7B%F0%9D%91%A4%F0%9D%91%96%F0%9D%91%9B%F0%9D%91%99%F0%9D%91%92%F0%9D%91%9B%F0%9D%91%94%F0%9D%91%A1%E2%84%8E%7D%7B4%7D" alt="\frac{𝑤𝑖𝑛𝑙𝑒𝑛𝑔𝑡ℎ}{4}"></p>
+</li>
+<li>
+<p><strong>win_length</strong> ：窗长，默认为n_fft</p>
+</li>
+<li>
+<p><strong>window</strong></p>
+<p>：字符串，元组，数字，函数或shape = (n_fft, )</p>
+<ul>
+<li>窗口（字符串，元组或数字）</li>
+<li>窗函数，例如scipy.signal.hanning</li>
+<li>长度为n_fft的向量或数组</li>
+</ul>
+</li>
+<li>
+<p><strong>center</strong>：bool</p>
+<ul>
+<li>如果为True，则假定D具有居中的帧</li>
+<li>如果False，则假定D具有左对齐的帧</li>
+</ul>
+</li>
+<li>
+<p><strong>length</strong>：如果提供，则输出y为零填充或剪裁为精确长度音频</p>
+</li>
+</ul>
+<p><strong>返回：</strong></p>
+<ul>
+<li><strong>y</strong> ：时域信号</li>
+</ul>
+<h2 id="9-幅度转dB">9.幅度转dB</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">librosa.amplitude_to_db(S, ref=<span class="number">1.0</span>)</span><br></pre></td></tr></table></figure>
+<p>将幅度频谱转换为dB标度频谱。也就是<code>对S取对数</code>。与这个函数相反的是<strong>librosa.db_to_amplitude(S)</strong></p>
+<p><strong>参数：</strong></p>
+<ul>
+<li><strong>S</strong> ：输入幅度</li>
+<li><strong>ref</strong> ：参考值，振幅abs（S）相对于ref进行缩放，<img src="https://math.jianshu.com/math?formula=20%E2%88%97%F0%9D%91%99%F0%9D%91%9C%F0%9D%91%94_%7B10%7D(%5Cfrac%7B%F0%9D%91%86%7D%7B%F0%9D%91%9F%F0%9D%91%92%F0%9D%91%93%7D)" alt="20∗𝑙𝑜𝑔_{10}(\frac{𝑆}{𝑟𝑒𝑓})"></li>
+</ul>
+<p><strong>返回：</strong></p>
+<ul>
+<li>dB为单位的S</li>
+</ul>
+<h2 id="10-功率转dB">10.功率转dB</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">librosa.core.power_to_db(S, ref=<span class="number">1.0</span>)</span><br></pre></td></tr></table></figure>
+<p>将功率谱（幅度平方）转换为分贝（dB）单位，与这个函数相反的是librosa.db_to_power(S)</p>
+<p><strong>参数：</strong></p>
+<ul>
+<li><strong>S</strong>：输入功率</li>
+<li><strong>ref</strong> ：参考值，振幅abs(S)相对于ref进行缩放，<img src="https://math.jianshu.com/math?formula=10%E2%88%97%F0%9D%91%99%F0%9D%91%9C%F0%9D%91%94_%7B10%7D(%5Cfrac%7B%F0%9D%91%86%7D%7B%F0%9D%91%9F%F0%9D%91%92%F0%9D%91%93%7D)" alt="10∗𝑙𝑜𝑔_{10}(\frac{𝑆}{𝑟𝑒𝑓})"></li>
+</ul>
+<p><strong>返回：</strong></p>
+<ul>
+<li>dB为单位的S</li>
+</ul>
+<h2 id="11-语谱图">11.语谱图</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">librosa.display.specshow(data,  x_axis=<span class="literal">None</span>, y_axis=<span class="literal">None</span>, sr=<span class="number">22050</span>, hop_length=<span class="number">512</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>参数：</strong></p>
+<ul>
+<li><strong>data</strong>：要显示的矩阵</li>
+<li><strong>sr</strong> ：采样率</li>
+<li><strong>hop_length</strong> ：帧移</li>
+<li><strong>x_axis 、y_axis</strong> ：x和y轴的范围</li>
+<li>频率类型
+<ul>
+<li>‘linear’，‘fft’，‘hz’：频率范围由FFT窗口和采样率确定</li>
+<li>‘log’：频谱以对数刻度显示</li>
+<li>‘mel’：频率由mel标度决定</li>
+</ul>
+</li>
+<li>时间类型
+<ul>
+<li>time：标记以毫秒，秒，分钟或小时显示。值以秒为单位绘制。</li>
+<li>s：标记显示为秒。</li>
+<li>ms：标记以毫秒为单位显示。</li>
+</ul>
+</li>
+<li>所有频率类型均以Hz为单位绘制</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#窗长大，窄带语谱图</span></span><br><span class="line">D = librosa.amplitude_to_db(np.<span class="built_in">abs</span>(librosa.stft(y)), ref=np.<span class="built_in">max</span>)</span><br><span class="line">plt.subplot(<span class="number">2</span>, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">librosa.display.specshow(D, y_axis=<span class="string">&#x27;linear&#x27;</span>)</span><br><span class="line">plt.colorbar(<span class="built_in">format</span>=<span class="string">&#x27;%+2.0f dB&#x27;</span>)</span><br><span class="line">plt.title(<span class="string">&#x27;Linear-frequency power spectrogram&#x27;</span>)</span><br><span class="line"></span><br><span class="line">plt.subplot(<span class="number">2</span>, <span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">librosa.display.specshow(D, y_axis=<span class="string">&#x27;log&#x27;</span>)</span><br><span class="line">plt.colorbar(<span class="built_in">format</span>=<span class="string">&#x27;%+2.0f dB&#x27;</span>)</span><br><span class="line">plt.title(<span class="string">&#x27;Log-frequency power spectrogram&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://api2.mubu.com/v3/document_image/3ebad8a5-fe00-423a-a4a6-dfb39d83ca45-1279996.jpg" alt="img"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#窗长减小，则是宽带语谱图</span></span><br><span class="line">D = librosa.amplitude_to_db(np.<span class="built_in">abs</span>(librosa.stft(y,win_length=<span class="number">64</span>)), ref=np.<span class="built_in">max</span>)</span><br><span class="line">plt.subplot(<span class="number">2</span>, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">librosa.display.specshow(D, y_axis=<span class="string">&#x27;linear&#x27;</span>)</span><br><span class="line">plt.colorbar(<span class="built_in">format</span>=<span class="string">&#x27;%+2.0f dB&#x27;</span>)</span><br><span class="line">plt.title(<span class="string">&#x27;Linear-frequency power spectrogram&#x27;</span>)</span><br><span class="line"></span><br><span class="line">plt.subplot(<span class="number">2</span>, <span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">librosa.display.specshow(D, y_axis=<span class="string">&#x27;log&#x27;</span>)</span><br><span class="line">plt.colorbar(<span class="built_in">format</span>=<span class="string">&#x27;%+2.0f dB&#x27;</span>)</span><br><span class="line">plt.title(<span class="string">&#x27;Log-frequency power spectrogram&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://api2.mubu.com/v3/document_image/7238f16c-9476-429c-9ffe-3be8c7cb881c-1279996.jpg" alt="img"></p>
+<h2 id="12-Mel滤波器组">12.Mel滤波器组</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">librosa.filters.mel(sr, n_fft, n_mels=<span class="number">128</span>, fmin=<span class="number">0.0</span>, fmax=<span class="literal">None</span>, htk=<span class="literal">False</span>, norm=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>创建一个滤波器组矩阵以将FFT合并成Mel频率</p>
+<p><strong>参数：</strong></p>
+<ul>
+<li>
+<p><strong>sr</strong> ：输入信号的采样率</p>
+</li>
+<li>
+<p><strong>n_fft</strong> ：FFT组件数</p>
+</li>
+<li>
+<p><strong>n_mels</strong> ：产生的梅尔带数</p>
+</li>
+<li>
+<p><strong>fmin</strong> ：最低频率（Hz）</p>
+</li>
+<li>
+<p><strong>fmax</strong>：最高频率（以Hz为单位）。如果为None，则使用fmax = sr / 2.0</p>
+</li>
+<li>
+<p>norm</p>
+<p>：{None，1，np.inf} [标量]</p>
+<ul>
+<li>如果为1，则将三角mel权重除以mel带的宽度（区域归一化）。否则，保留所有三角形的峰值为1.0</li>
+</ul>
+</li>
+</ul>
+<p><strong>返回：</strong></p>
+<ul>
+<li>Mel变换矩阵</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">melfb = librosa.filters.mel(<span class="number">22050</span>, <span class="number">2048</span>)</span><br><span class="line"><span class="comment"># array([[ 0.   ,  0.016, ...,  0.   ,  0.   ],</span></span><br><span class="line"><span class="comment">#        [ 0.   ,  0.   , ...,  0.   ,  0.   ],</span></span><br><span class="line"><span class="comment">#        ...,</span></span><br><span class="line"><span class="comment">#        [ 0.   ,  0.   , ...,  0.   ,  0.   ],</span></span><br><span class="line"><span class="comment">#        [ 0.   ,  0.   , ...,  0.   ,  0.   ]])</span></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">plt.figure()</span><br><span class="line">librosa.display.specshow(melfb, x_axis=<span class="string">&#x27;linear&#x27;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&#x27;Mel filter&#x27;</span>)</span><br><span class="line">plt.title(<span class="string">&#x27;Mel filter bank&#x27;</span>)</span><br><span class="line">plt.colorbar()</span><br><span class="line">plt.tight_layout()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://api2.mubu.com/v3/document_image/1ff0c2b4-91fd-47aa-8929-29fec1e97679-1279996.jpg" alt="img"></p>
+<h2 id="13-计算Mel-scaled-频谱">13.计算Mel scaled 频谱</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">librosa.feature.melspectrogram(y=<span class="literal">None</span>, sr=<span class="number">22050</span>, S=<span class="literal">None</span>, n_fft=<span class="number">2048</span>, hop_length=<span class="number">512</span>, win_length=<span class="literal">None</span>, window=<span class="string">&#x27;hann&#x27;</span>, center=<span class="literal">True</span>, pad_mode=<span class="string">&#x27;reflect&#x27;</span>, power=<span class="number">2.0</span>)</span><br></pre></td></tr></table></figure>
+<p>如果提供了频谱图输入S，则通过mel_f.dot（S）将其直接映射到mel_f上。</p>
+<p>如果提供了时间序列输入y，sr，则首先计算其幅值频谱S，然后通过mel_f.dot（S ** power）将其映射到mel scale上 。默认情况下，power= 2在功率谱上运行。</p>
+<p><strong>参数</strong>：</p>
+<ul>
+<li>
+<p>**y **：音频时间序列</p>
+</li>
+<li>
+<p>**sr **：采样率</p>
+</li>
+<li>
+<p>**S **：频谱</p>
+</li>
+<li>
+<p>**n_fft **：FFT窗口的长度</p>
+</li>
+<li>
+<p>**hop_length **：帧移</p>
+</li>
+<li>
+<p>**win_length **：窗口的长度为win_length，默认<code>win_length = n_fft</code></p>
+</li>
+<li>
+<p>**window **：字符串，元组，数字，函数或shape =（n_fft, )</p>
+<ul>
+<li>窗口规范（字符串，元组或数字）；看到<a target="_blank" rel="noopener" href="https://links.jianshu.com/go?to=https%3A%2F%2Fdocs.scipy.org%2Fdoc%2Fscipy%2Freference%2Fgenerated%2Fscipy.signal.get_window.html%23scipy.signal.get_window">scipy.signal.get_window</a></li>
+<li>窗口函数，例如 scipy.signal.hanning</li>
+<li>长度为n_fft的向量或数组</li>
+</ul>
+</li>
+<li>
+<p>center</p>
+<p>：bool</p>
+<ul>
+<li>如果为True，则填充信号y，以使帧 t以y [t * hop_length]为中心。</li>
+<li>如果为False，则帧t从y [t * hop_length]开始</li>
+</ul>
+</li>
+<li>
+<p><strong>power</strong>：幅度谱的指数。例如1代表能量，2代表功率，等等</p>
+</li>
+<li>
+<p><strong>n_mels</strong>：滤波器组的个数 1288</p>
+</li>
+<li>
+<p><strong>fmax</strong>：最高频率</p>
+</li>
+</ul>
+<p><strong>返回</strong>：</p>
+<ul>
+<li>Mel频谱shape=(n_mels, t)</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> librosa.display</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">y, sr = librosa.load(librosa.util.example_audio_file())</span><br><span class="line"><span class="comment"># 方法一：使用时间序列求Mel频谱</span></span><br><span class="line"><span class="built_in">print</span>(librosa.feature.melspectrogram(y=y, sr=sr))</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;[[2.9641967e-07 2.5462259e-03 6.9437072e-02 ... 3.4732797e-09</span></span><br><span class="line"><span class="string">  5.4255165e-09 1.8523759e-09]</span></span><br><span class="line"><span class="string"> [1.7560427e-07 1.1623162e-02 1.3323289e+00 ... 2.8872930e-07</span></span><br><span class="line"><span class="string">  7.6875637e-08 4.4768003e-09]</span></span><br><span class="line"><span class="string"> [3.8013613e-07 2.3408584e-02 5.0721464e+00 ... 1.6204266e-06</span></span><br><span class="line"><span class="string">  3.2566246e-07 3.5224299e-09]</span></span><br><span class="line"><span class="string"> ...</span></span><br><span class="line"><span class="string"> [2.3962335e-10 2.7136402e-08 2.1219030e-06 ... 2.4645463e-11</span></span><br><span class="line"><span class="string">  3.0509512e-12 8.6144919e-15]</span></span><br><span class="line"><span class="string"> [1.4714385e-10 9.5965706e-09 6.5881960e-07 ... 5.2040217e-12</span></span><br><span class="line"><span class="string">  5.4942682e-13 1.4356046e-15]</span></span><br><span class="line"><span class="string"> [3.0418751e-12 2.1499022e-10 4.4302659e-08 ... 4.5521724e-13</span></span><br><span class="line"><span class="string">  9.9850961e-14 5.5009496e-16]]&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 方法二：使用stft频谱求Mel频谱</span></span><br><span class="line">D = np.<span class="built_in">abs</span>(librosa.stft(y)) ** <span class="number">2</span>  <span class="comment"># stft频谱</span></span><br><span class="line">S = librosa.feature.melspectrogram(S=D)  <span class="comment"># 使用stft频谱求Mel频谱</span></span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>, <span class="number">4</span>))</span><br><span class="line">librosa.display.specshow(librosa.power_to_db(S, ref=np.<span class="built_in">max</span>),</span><br><span class="line">                         y_axis=<span class="string">&#x27;mel&#x27;</span>, fmax=<span class="number">8000</span>, x_axis=<span class="string">&#x27;time&#x27;</span>)</span><br><span class="line">plt.colorbar(<span class="built_in">format</span>=<span class="string">&#x27;%+2.0f dB&#x27;</span>)</span><br><span class="line">plt.title(<span class="string">&#x27;Mel spectrogram&#x27;</span>)</span><br><span class="line">plt.tight_layout()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://api2.mubu.com/v3/document_image/9eeea98b-69fd-4929-8833-a04b51d3b511-1279996.jpg" alt="img"></p>
+<h2 id="14-提取Log-Mel-Spectrogram-特征-FBank特征">14.提取Log-Mel Spectrogram 特征(FBank特征)</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> librosa</span><br><span class="line"></span><br><span class="line">y, sr = librosa.load(librosa.util.example_audio_file(), sr=<span class="number">16000</span>)</span><br><span class="line"><span class="comment"># 提取 mel spectrogram feature</span></span><br><span class="line">melspec = librosa.feature.melspectrogram(y, sr, n_fft=<span class="number">1024</span>, hop_length=<span class="number">512</span>, n_mels=<span class="number">128</span>)</span><br><span class="line">logmelspec = librosa.amplitude_to_db(melspec)        <span class="comment"># 转换到对数刻度</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(logmelspec.shape)        <span class="comment"># (128, 65)</span></span><br></pre></td></tr></table></figure>
+<p>可见，Log-Mel Spectrogram特征是二维数组的形式，128表示Mel频率的维度（频域），64为时间帧长度（时域），所以Log-Mel Spectrogram特征是音频信号的时频表示特征。其中，n_fft指的是窗的大小，这里为1024；hop_length表示相邻窗之间的距离，这里为512，也就是相邻窗之间有50%的overlap；n_mels为mel bands的数量，这里设为128。</p>
+<h2 id="15-提取MFCC系数">15.提取MFCC系数</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">librosa.feature.mfcc(y=<span class="literal">None</span>, sr=<span class="number">22050</span>, S=<span class="literal">None</span>, n_mfcc=<span class="number">20</span>, dct_type=<span class="number">2</span>, norm=<span class="string">&#x27;ortho&#x27;</span>, **kwargs)</span><br></pre></td></tr></table></figure>
+<p><strong>参数：</strong></p>
+<ul>
+<li><strong>y</strong>：音频数据</li>
+<li><strong>sr</strong>：采样率</li>
+<li><strong>S</strong>：np.ndarray，对数功能梅尔谱图</li>
+<li><strong>n_mfcc</strong>：int&gt;0，要返回的MFCC数量</li>
+<li><strong>dct_type</strong>：None, or {1, 2, 3}  离散余弦变换（DCT）类型。默认情况下，使用DCT类型2。</li>
+<li><strong>norm</strong>： None or ‘ortho’ 规范。如果dct_type为2或3，则设置norm =’ortho’使用正交DCT基础。 标准化不支持dct_type = 1。</li>
+</ul>
+<p><strong>返回：</strong></p>
+<ul>
+<li>M： MFCC序列</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> librosa</span><br><span class="line"></span><br><span class="line">y, sr = librosa.load(librosa.util.example_audio_file(), sr=<span class="number">16000</span>)</span><br><span class="line"><span class="comment"># 提取 MFCC feature</span></span><br><span class="line">mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=<span class="number">40</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(mfccs.shape)        <span class="comment"># (40, 1921)</span></span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Liu Yang</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://dogwealth.github.io/2021/07/01/Librosa%E5%BA%93-%E8%AF%AD%E9%9F%B3%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/">https://dogwealth.github.io/2021/07/01/Librosa%E5%BA%93-%E8%AF%AD%E9%9F%B3%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://dogwealth.github.io" target="_blank">DogWealth</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AF%AD%E9%9F%B3%E5%88%86%E7%A6%BB%E9%A1%B9%E7%9B%AE/">语音分离项目</a><a class="post-meta__tags" href="/tags/Python/">Python</a><a class="post-meta__tags" href="/tags/%E8%AF%AD%E9%9F%B3%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/">语音信号处理</a></div><div class="post_share"><div class="social-share" data-image="https://upimage.alexhchu.com/2020/10/21/671e773d973ae.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/06/26/802-11%E9%93%BE%E8%B7%AF%E4%BB%BF%E7%9C%9F/"><img class="prev-cover" src="https://api2.mubu.com/v3/document_image/6f1c02c3-2e13-43f6-8baa-b73e8d343cf3-1279996.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">802.11链路仿真</div></div></a></div><div class="next-post pull-right"><a href="/2021/07/01/Yaml%E6%95%99%E7%A8%8B/"><img class="next-cover" src="https://api2.mubu.com/v3/document_image/86dd17f2-3e7f-44e5-9c19-c7bd4fb5e623-1279996.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Yaml教程</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/07/01/init-py文件管理Package/" title="__init__.py文件管理Package"><img class="cover" src="https://upimage.alexhchu.com/2020/10/21/f5ac68ddaaf64.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-07-01</div><div class="title">__init__.py文件管理Package</div></div></a></div><div><a href="/2021/07/01/Yaml教程/" title="Yaml教程"><img class="cover" src="https://api2.mubu.com/v3/document_image/86dd17f2-3e7f-44e5-9c19-c7bd4fb5e623-1279996.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-07-01</div><div class="title">Yaml教程</div></div></a></div><div><a href="/2021/07/01/语音信号处理总复习/" title="语音信号处理总复习"><img class="cover" src="https://api2.mubu.com/v3/document_image/39ef87e2-5025-4b93-b5ac-329c87974ea6-1279996.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-07-01</div><div class="title">语音信号处理总复习</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="comment-switch"><span class="first-comment">Valine</span><span class="switch-btn"></span><span class="second-comment">Twikoo</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://pic4.zhimg.com/v2-728dee670e821ac6f498a38e94935a63_r.jpg?source=1940ef5c" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Liu Yang</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">18</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/DogWealth"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/DogWealth" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:liuyang_16529@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">语音信号处理库——Librosa</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E8%AF%BB%E5%8F%96%E8%AF%AD%E9%9F%B3"><span class="toc-number">1.1.</span> <span class="toc-text">1.读取语音</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E8%AF%BB%E5%8F%96%E6%97%B6%E9%95%BF"><span class="toc-number">1.2.</span> <span class="toc-text">2.读取时长</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E9%87%87%E6%A0%B7%E7%8E%87"><span class="toc-number">1.3.</span> <span class="toc-text">3.采样率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%86%99%E9%9F%B3%E9%A2%91"><span class="toc-number">1.4.</span> <span class="toc-text">4.写音频</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E8%BF%87%E9%9B%B6%E7%8E%87"><span class="toc-number">1.5.</span> <span class="toc-text">5.过零率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E6%B3%A2%E5%BD%A2%E5%9B%BE"><span class="toc-number">1.6.</span> <span class="toc-text">6.波形图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E7%9F%AD%E6%97%B6%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2"><span class="toc-number">1.7.</span> <span class="toc-text">7.短时傅里叶变换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E7%9F%AD%E6%97%B6%E5%82%85%E9%87%8C%E5%8F%B6%E9%80%86%E5%8F%98%E6%8D%A2"><span class="toc-number">1.8.</span> <span class="toc-text">8.短时傅里叶逆变换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E5%B9%85%E5%BA%A6%E8%BD%ACdB"><span class="toc-number">1.9.</span> <span class="toc-text">9.幅度转dB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E5%8A%9F%E7%8E%87%E8%BD%ACdB"><span class="toc-number">1.10.</span> <span class="toc-text">10.功率转dB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-%E8%AF%AD%E8%B0%B1%E5%9B%BE"><span class="toc-number">1.11.</span> <span class="toc-text">11.语谱图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12-Mel%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%BB%84"><span class="toc-number">1.12.</span> <span class="toc-text">12.Mel滤波器组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#13-%E8%AE%A1%E7%AE%97Mel-scaled-%E9%A2%91%E8%B0%B1"><span class="toc-number">1.13.</span> <span class="toc-text">13.计算Mel scaled 频谱</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#14-%E6%8F%90%E5%8F%96Log-Mel-Spectrogram-%E7%89%B9%E5%BE%81-FBank%E7%89%B9%E5%BE%81"><span class="toc-number">1.14.</span> <span class="toc-text">14.提取Log-Mel Spectrogram 特征(FBank特征)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#15-%E6%8F%90%E5%8F%96MFCC%E7%B3%BB%E6%95%B0"><span class="toc-number">1.15.</span> <span class="toc-text">15.提取MFCC系数</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/07/01/%E8%AF%AD%E9%9F%B3%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86%E6%80%BB%E5%A4%8D%E4%B9%A0/" title="语音信号处理总复习"><img src="https://api2.mubu.com/v3/document_image/39ef87e2-5025-4b93-b5ac-329c87974ea6-1279996.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="语音信号处理总复习"/></a><div class="content"><a class="title" href="/2021/07/01/%E8%AF%AD%E9%9F%B3%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86%E6%80%BB%E5%A4%8D%E4%B9%A0/" title="语音信号处理总复习">语音信号处理总复习</a><time datetime="2021-07-01T15:18:08.000Z" title="发表于 2021-07-01 23:18:08">2021-07-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/07/01/init-py%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86Package/" title="__init__.py文件管理Package"><img src="https://upimage.alexhchu.com/2020/10/21/f5ac68ddaaf64.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="__init__.py文件管理Package"/></a><div class="content"><a class="title" href="/2021/07/01/init-py%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86Package/" title="__init__.py文件管理Package">__init__.py文件管理Package</a><time datetime="2021-07-01T09:30:30.000Z" title="发表于 2021-07-01 17:30:30">2021-07-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/07/01/Yaml%E6%95%99%E7%A8%8B/" title="Yaml教程"><img src="https://api2.mubu.com/v3/document_image/86dd17f2-3e7f-44e5-9c19-c7bd4fb5e623-1279996.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Yaml教程"/></a><div class="content"><a class="title" href="/2021/07/01/Yaml%E6%95%99%E7%A8%8B/" title="Yaml教程">Yaml教程</a><time datetime="2021-07-01T09:29:02.000Z" title="发表于 2021-07-01 17:29:02">2021-07-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/07/01/Librosa%E5%BA%93-%E8%AF%AD%E9%9F%B3%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/" title="Librosa库-语音信号处理"><img src="https://upimage.alexhchu.com/2020/10/21/671e773d973ae.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Librosa库-语音信号处理"/></a><div class="content"><a class="title" href="/2021/07/01/Librosa%E5%BA%93-%E8%AF%AD%E9%9F%B3%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/" title="Librosa库-语音信号处理">Librosa库-语音信号处理</a><time datetime="2021-07-01T09:28:12.000Z" title="发表于 2021-07-01 17:28:12">2021-07-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/26/802-11%E9%93%BE%E8%B7%AF%E4%BB%BF%E7%9C%9F/" title="802.11链路仿真"><img src="https://api2.mubu.com/v3/document_image/6f1c02c3-2e13-43f6-8baa-b73e8d343cf3-1279996.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="802.11链路仿真"/></a><div class="content"><a class="title" href="/2021/06/26/802-11%E9%93%BE%E8%B7%AF%E4%BB%BF%E7%9C%9F/" title="802.11链路仿真">802.11链路仿真</a><time datetime="2021-06-26T12:38:18.000Z" title="发表于 2021-06-26 20:38:18">2021-06-26</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://upimage.alexhchu.com/2020/10/21/671e773d973ae.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By Liu Yang</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a target="_blank" rel="noopener" href="https://butterfly.js.org/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="rightside.chat_btn"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', '', 'katex-wrap')
+  })
+})()</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'YJYdggr9kLO8LrJADzdahGk1-gzGzoHsz',
+      appKey: 'zK1kwFIW8UdR9bgI9NpKSd91',
+      placeholder: '记得留下你的昵称和邮箱....可以快速收到回复',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+      requiredFields: ["nick,mail"],
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !true) {
+  if (true) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script>(()=>{
+  const $countDom = document.getElementById('twikoo-count')
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'twikoo-indol.vercel.app',
+      region: ''
+    }, null))
+  }
+
+  const getCount = () => {
+    twikoo.getCommentsCount({
+      envId: 'twikoo-indol.vercel.app',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      $countDom.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const loadTwikoo = (bool = false) => {
+    if (typeof twikoo === 'object') {
+      init()
+      bool && $countDom && setTimeout(getCount,0)
+    } else {
+      getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(()=> {
+        init()
+        bool && $countDom && setTimeout(getCount,0)
+      })
+    }
+  }
+
+  if ('Valine' === 'Twikoo' || !true) {
+    if (true) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo(true)
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div><script defer src="/live2d-widget/autoload.js"></script><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/fireworks.min.js"></script><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script>var gitcalendar = new Vue({
+  el: '#gitcalendar',
+  data: {
+    simplemode: false, 
+    user: 'DogWealth',
+    fixed: 'fixed',
+    px: 'px',
+    x: '',
+    y: '',
+    span1: '',
+    span2: '',
+    month: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+    monthchange: [],
+    oneyearbeforeday: '',
+    thisday: '',
+    amonthago: '',
+    aweekago: '',
+    weekdatacore: 0,
+    datacore: 0,
+    total: 0,
+    datadate: '',
+    data: [],
+    positionplusdata: [],
+    firstweek: [],
+    lastweek: [],
+    beforeweek: [],
+    thisweekdatacore: 0,
+    mounthbeforeday: 0,
+    mounthfirstindex: 0,
+    crispedges: 'crispedges',
+    thisdayindex: 0,
+    amonthagoindex: 0,
+    amonthagoweek: [],
+    firstdate: [],
+    first2date: [],
+    montharrbefore: [],
+    monthindex: 0,
+    color: ['#e4dfd7', '#f9f4dc', '#f7e8aa', '#f7e8aa', '#f8df72', '#fcd217', '#fcc515', '#f28e16', '#fb8b05', '#d85916', '#f43e06']
+  },
+  methods: {
+    selectStyle(data, event) {
+      document.querySelector('.angle-wrapper').style.display = 'block'
+      this.span1 = data.date;
+      this.span2 = data.count;
+      this.x = event.clientX - 100;
+      this.y = event.clientY - 60
+    },
+    outStyle() {
+      document.querySelector('.angle-wrapper').style.display = 'none'
+    },
+    thiscolor(x) {
+      if (x === 0) {
+        let i = parseInt(x / 2);
+        return this.color[0]
+      } else if (x < 2) {
+        return this.color[1]
+      } else if (x < 20) {
+        let i = parseInt(x / 2);
+        return this.color[i]
+      } else {
+        return this.color[9]
+      }
+    },
+  }
+});
+var apiurl = 'python-github-calendar-api2.vercel.app/api/?dogwealth# 留空为默认公共API，自建api内容详见下节' ? 'https://python-github-calendar-api2.vercel.app/api/?dogwealth# 留空为默认公共API，自建api内容详见下节/api?' : 'https://githubapi.ryanchristian.dev/user/'
+var githubapiurl = apiurl + gitcalendar.user;
+//canvas绘图
+function responsiveChart() {
+  let c = document.getElementById("gitcanvas");
+  if (c) {
+    let cmessage = document.getElementById("gitmessage");
+    let ctx = c.getContext("2d");
+    c.width = document.getElementById("gitcalendarcanvasbox").offsetWidth;
+    let linemaxwitdh = 0.96 * c.width / gitcalendar.data.length;
+    c.height = 9 * linemaxwitdh;
+    let lineminwitdh = 0.8 * linemaxwitdh;
+    let setposition = {
+      x: 0.02 * c.width,
+      y: 0.025 * c.width
+    };
+    for (let week in gitcalendar.data) {
+      weekdata = gitcalendar.data[week];
+      for (let day in weekdata) {
+        let dataitem = {
+          date: "",
+          count: "",
+          x: 0,
+          y: 0
+        };
+        gitcalendar.positionplusdata.push(dataitem);
+        ctx.fillStyle = gitcalendar.thiscolor(weekdata[day].count);
+        setposition.y = Math.round(setposition.y * 100) / 100;
+        dataitem.date = weekdata[day].date;
+        dataitem.count = weekdata[day].count;
+        dataitem.x = setposition.x;
+        dataitem.y = setposition.y;
+        ctx.fillRect(setposition.x, setposition.y, lineminwitdh, lineminwitdh);
+        setposition.y = setposition.y + linemaxwitdh
+      };
+      setposition.y = 0.025 * c.width;
+      setposition.x = setposition.x + linemaxwitdh
+    };
+    ctx.font = "600  Arial";
+    ctx.fillStyle = '#aaa';
+    ctx.fillText("日", 0, 1.9 * linemaxwitdh);
+    ctx.fillText("二", 0, 3.9 * linemaxwitdh);
+    ctx.fillText("四", 0, 5.9 * linemaxwitdh);
+    ctx.fillText("六", 0, 7.9 * linemaxwitdh);
+    let monthindexlist = c.width / 24;
+    for (let index in gitcalendar.monthchange) {
+      ctx.fillText(gitcalendar.monthchange[index], monthindexlist, 0.7 * linemaxwitdh);
+      monthindexlist = monthindexlist + c.width / 12
+    };
+    cmessage.onmousemove = function(event) {
+      document.querySelector('.angle-wrapper').style.display = 'none'
+    };
+    c.onmousemove = function(event) {
+      document.querySelector('.angle-wrapper').style.display = 'none'
+      getMousePos(c, event);
+    };
+
+    function getMousePos(canvas, event) {
+      var rect = canvas.getBoundingClientRect();
+      var x = event.clientX - rect.left * (canvas.width / rect.width);
+      var y = event.clientY - rect.top * (canvas.height / rect.height);
+      //console.log("x:"+x+",y:"+y);
+      for (let item of gitcalendar.positionplusdata) {
+        let lenthx = x - item.x;
+        let lenthy = y - item.y;
+        //console.log(lenthx,lenthy);
+        if (0 < lenthx && lenthx < lineminwitdh) {
+          if (0 < lenthy && lenthy < lineminwitdh) {
+            //console.log(item.date,item.count)
+            document.querySelector('.angle-wrapper').style.display = 'block'
+            gitcalendar.span1 = item.date;
+            gitcalendar.span2 = item.count;
+            gitcalendar.x = event.clientX - 100;
+            gitcalendar.y = event.clientY - 60
+          }
+        }
+        //if(0< x - item.x <lineminwitdh&&0< y - item.y <lineminwitdh){
+        //console.log(item.count,item.date);
+        //}
+      }
+    }
+  }
+}
+//数据统计算法
+function addlastmonth() {
+  if (gitcalendar.thisdayindex === 0) {
+    thisweekcore(52);
+    thisweekcore(51);
+    thisweekcore(50);
+    thisweekcore(49);
+    thisweekcore(48);
+    gitcalendar.thisweekdatacore += gitcalendar.firstdate[6].count;
+    gitcalendar.amonthago = gitcalendar.firstdate[6].date
+  } else {
+    thisweekcore(52);
+    thisweekcore(51);
+    thisweekcore(50);
+    thisweekcore(49);
+    thisweek2core();
+    gitcalendar.amonthago = gitcalendar.first2date[gitcalendar.thisdayindex - 1].date
+  }
+};
+
+function thisweek2core() {
+  for (let i = gitcalendar.thisdayindex - 1; i < gitcalendar.first2date.length; i++) {
+    gitcalendar.thisweekdatacore += gitcalendar.first2date[i].count
+  }
+};
+
+function thisweekcore(index) {
+  for (let item of gitcalendar.data[index]) {
+    gitcalendar.thisweekdatacore += item.count
+  }
+};
+
+function addlastweek() {
+  for (let item of gitcalendar.lastweek) {
+    gitcalendar.weekdatacore += item.count
+  }
+};
+
+function addbeforeweek() {
+  for (let i = gitcalendar.thisdayindex; i < gitcalendar.beforeweek.length; i++) {
+    gitcalendar.weekdatacore += gitcalendar.beforeweek[i].count
+  }
+};
+
+function addweek(data) {
+  if (gitcalendar.thisdayindex === 6) {
+    gitcalendar.aweekago = gitcalendar.lastweek[0].date;
+    addlastweek()
+  } else {
+    lastweek = data.contributions[51];
+    gitcalendar.aweekago = lastweek[gitcalendar.thisdayindex + 1].date;
+    addlastweek();
+    addbeforeweek()
+  }
+}
+
+fetch(githubapiurl)
+  .then(data => data.json())
+  .then(data => {
+    gitcalendar.data = data.contributions;
+    gitcalendar.total = data.total;
+    gitcalendar.first2date = gitcalendar.data[48];
+    gitcalendar.firstdate = gitcalendar.data[47];
+    gitcalendar.firstweek = data.contributions[0];
+    gitcalendar.lastweek = data.contributions[52];
+    gitcalendar.beforeweek = data.contributions[51];
+    gitcalendar.thisdayindex = gitcalendar.lastweek.length - 1;
+    gitcalendar.thisday = gitcalendar.lastweek[gitcalendar.thisdayindex].date;
+    gitcalendar.oneyearbeforeday = gitcalendar.firstweek[0].date;
+    gitcalendar.monthindex = gitcalendar.thisday.substring(5, 7) * 1;
+    gitcalendar.montharrbefore = gitcalendar.month.splice(gitcalendar.monthindex, 12 - gitcalendar.monthindex);
+    gitcalendar.monthchange = gitcalendar.montharrbefore.concat(gitcalendar.month);
+    addweek(data);
+    addlastmonth();
+    responsiveChart();
+  })
+  .catch(function(error) {
+    console.log(error);
+  });
+
+//手机版更换为svg绘制
+if (document.getElementById("gitcalendarcanvasbox").offsetWidth < 500) {
+  gitcalendar.simplemode = false
+}
+
+//当改变窗口大小时重新绘制canvas
+window.onresize = function() {
+  if (gitcalendar.simplemode) responsiveChart()
+}
+
+//解决滚动滑轮时出现的标签显示
+window.onscroll = function() {
+  if (document.querySelector('.angle-wrapper')) {
+    document.querySelector('.angle-wrapper').style.display = 'none'
+  }
+};</script></div></body></html>
